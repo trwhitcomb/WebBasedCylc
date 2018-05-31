@@ -16,6 +16,11 @@ from port import getPorts
 
 HOST_NAME = 'localhost'
 
+def cylc_run_dir():
+    return os.path.expanduser(
+        os.path.join('~', 'cylc-run')
+    )
+
 def contact_file(suitename):
     suite_vars = {}
     with open(os.path.join(service_dir(suitename), 'contact'), 'r') as f:
@@ -25,8 +30,8 @@ def contact_file(suitename):
     return suite_vars
 
 def service_dir(suitename):
-    return os.path.expanduser(
-        os.path.join('~', 'cylc-run', suitename, '.service')
+    return os.path.join(
+        cylc_run_dir(), suitename, '.service'
     )
 
 
