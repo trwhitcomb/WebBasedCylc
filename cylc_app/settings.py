@@ -26,7 +26,7 @@ SECRET_KEY = 'qrt=b=berv=rk5k8r83qyww*#7b-f)1p+8%t2bjqzg0ee5$d*c'
 DEBUG = True
 
 #this will need to be changed if deployed elsewhere
-ALLOWED_HOSTS = [u'cylc-capstone-sp18-bigbrotherx52.c9users.io']
+ALLOWED_HOSTS = [u'localhost']
 
 
 # Application definition

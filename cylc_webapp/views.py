@@ -7,7 +7,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 
-from au import getResponse, getSuiteName
+from au import getResponse
 from job import Job
 
   
@@ -20,9 +20,8 @@ def suites(request):
     template = loader.get_template('suites.html')
     return HttpResponse(template.render())
     
-def suite_view(request):
-    data = getResponse()
-    suite = getSuiteName()
+def suite_view(request, suitename=''):
+    data = getResponse(suitename)
     dataset = []
     dataOrder = ["name", "label", "latest_message","host","batch_sys_name","submit_method_id","submitted_time_string","started_time_string","finished_time_string","mean_elapsed_time"]
     if(data == None):
@@ -36,7 +35,7 @@ def suite_view(request):
     context = {
         'dataOrderKey' : dataOrder,
         'data' : dataset,
-        'suite' : suite
+        'suite' : suitename
     }
     template = loader.get_template('suite_view.html')
     return HttpResponse(template.render(context, request) )

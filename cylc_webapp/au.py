@@ -13,12 +13,22 @@ from anytree import Node, RenderTree
 from job import Job, JobNode
 from port import getPorts
 
-SUITE = "nrl.sample"
-HOST_NAME = 'bigbrotherx52-cylc-capstone-sp18-5942931'
-PORT_LIST = getPorts(HOST_NAME)
 
-def getSuiteName():
-    return SUITE
+HOST_NAME = 'localhost'
+
+def contact_file(suitename):
+    suite_vars = {}
+    with open(os.path.join(service_dir(suitename), 'contact'), 'r') as f:
+        for line in f:
+            key, value = line.strip().split('=')
+            suite_vars[key] = value
+    return suite_vars
+
+def service_dir(suitename):
+    return os.path.expanduser(
+        os.path.join('~', 'cylc-run', suitename, '.service')
+    )
+
 
 '''
     Returns the passphrase as read from the file saved in the '.service/passphrase'
@@ -26,14 +36,10 @@ def getSuiteName():
     TODO: dynamically retrieve passphrase file, error check path, os build path rather than concat
 '''
 def getPassphrase(suite):
-    # if not os.path.exists(newpath):
-    #     os.makedirs(newpath)
-    # passphraseFile = "/home/ubuntu/workspace/cylc_webapp/cylc-variables/"+ SUITE +"/passphrase"
-    
-    passphrase_file = "/home/ubuntu/cylc-run/" + suite + "/.service/passphrase"
-    with open(passphrase_file,'r') as f:
+    with open(os.path.join(service_dir(suite), 'passphrase'),'r') as f:
        	passphrase = f.readline()
     return passphrase
+
 
 '''
     Returns an array of the jobs already in display order
@@ -116,29 +122,30 @@ def parseJobs(suite_json):
     TODO: dynamically retrieve passphrase file, error check path, os build path rather than concat
 '''
 def getVerify(suite, path=None):
-    # return "/home/ubuntu/workspace/cylc_webapp/cylc-variables/"+suite+"/ssl.cert"
-    return "/home/ubuntu/cylc-run/" + suite + "/.service/ssl.cert"
-    # need to make it so that the user can add the ssl & passphrase to a suite folder.
+    return os.path.join(service_dir(suite), 'ssl.cert')
 
 '''
     Returns an array of Job objects and a dictionary of strings, JobNodes as a tuple
     TODO: seperate API call from actual parsing of returned value
 '''
-def getResponse():
-    auth = requests.auth.HTTPDigestAuth('cylc', getPassphrase(SUITE))
+def getResponse(suitename):
+    contact = contact_file(suitename)
+    port = contact['CYLC_SUITE_PORT']
+    host = contact['CYLC_SUITE_HOST']
+    auth = requests.auth.HTTPDigestAuth('cylc', getPassphrase(suitename))
     session = requests.Session()
-    for portNumber in PORT_LIST:
-        url = "https://%s:%d/get_latest_state" % (HOST_NAME, portNumber)
-        try:
-            ret = session.get(
-                                url,
-                                auth = auth,
-                                verify = getVerify(SUITE)
-                             )
-        
-            response = ret.json()
-            cycles = parseJobs(response)
-            hierarchy = getFamilyHierarchy(response, cycles)
-            return hierarchy
-        except Exception, err: 
-            print err
+    url = "https://%s:%s/get_latest_state" % (host, port)
+    print url
+    try:
+        ret = session.get(
+                            url,
+                            auth = auth,
+                            verify = getVerify(suitename)
+                         )
+    
+        response = ret.json()
+        cycles = parseJobs(response)
+        hierarchy = getFamilyHierarchy(response, cycles)
+        return hierarchy
+    except Exception, err: 
+        print err
