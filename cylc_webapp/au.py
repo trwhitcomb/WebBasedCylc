@@ -135,7 +135,6 @@ def getResponse(suitename):
     auth = requests.auth.HTTPDigestAuth('cylc', getPassphrase(suitename))
     session = requests.Session()
     url = "https://%s:%s/get_latest_state" % (host, port)
-    print url
     try:
         ret = session.get(
                             url,
