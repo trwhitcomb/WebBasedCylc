@@ -5,19 +5,32 @@ Bringing Cylc to the web by allowing users to skip the hassles of installing all
 
 ## Getting Started
 
+### Installing Prerequisites
+
+Make sure that you have Django and anytree python packages installed.
+
 ### Installing Cylc
 
 Follow the [documentation](https://cylc.github.io/cylc/html/multi/cug-htmlse3.html)
 And if you're on windows, here is a special [google doc](https://docs.google.com/document/d/10rI3ESkAkvQb4Pb1mU6Xa4Icx0EW2NoP0uZFfJ9VpLY/edit?usp=sharing) with step by step instructions
 
-### Creating a Cylc instance
+### Creating a Cylc suite
 
 Follow the [documentation](https://cylc.github.io/cylc/documentation.html#create-a-new-suite)
 
-### Runnng the Code
+### Running the Code
 
-Run the workspace in Cloud9 once the suite is already up and running. View the html file `suite_view.html` to ensure it's behaving as expected. 
+From the top-level directory, run 
+```
+    python manage.py runserver
+```
 
+This will start the internal Django server on your localhost listening for local directories.  By default, the server
+is configured to recognize the hostname 'localhost'.  It will print out the listening port when run, but it is typically
+`http://localhost:8000` - the endpoint is `suite_view` with the suite name as part of the URL:
+```
+    http://localhost:8000/suite_view/<suite-name>
+```
 ![Sample Suite View](https://raw.githubusercontent.com/NancyGomez/WebBasedCylc/c9stuff/Screenshots/nrlsample_suiteview.png)
 
 
