@@ -1,7 +1,0 @@
-script=printenv CYLC_FOOBAR
-[environment]
-    CYLC_FOOBAR="""
-foo
-bar
-baz
-"""

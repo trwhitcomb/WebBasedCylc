@@ -1,8 +1,0 @@
-[scheduling]
-    [[dependencies]]
-                    graph = """
-                        ( foo & bar => baz
-                    """
-[runtime]
-[[foo, bar, baz]]
-     command scripting = echo "Hello"

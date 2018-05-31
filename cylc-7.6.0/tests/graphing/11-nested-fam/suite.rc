@@ -1,9 +1,0 @@
-[scheduling]
-    [[dependencies]]
-        graph = foo => bar
-[runtime]
-    [[TOP]]
-    [[MID]]
-        inherit = TOP
-    [[foo, bar]]
-        inherit = MID

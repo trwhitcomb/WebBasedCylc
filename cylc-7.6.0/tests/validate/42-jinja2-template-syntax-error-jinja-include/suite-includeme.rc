@@ -1,3 +1,0 @@
-        {% if true %}
-        graph = foo
-        {% end if %
