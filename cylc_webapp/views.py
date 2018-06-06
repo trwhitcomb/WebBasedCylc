@@ -17,8 +17,14 @@ def register(request):
     return HttpResponse(template.render())
 
 def suites(request):
+    dirs_with_suite = list()
+    dirs = os.listdir(cylc_run_dir())
+    for direc in dirs:
+        path = os.path.join(cylc_run_dir(),direc, "suite.rc")
+        if os.path.isfile(path):
+            dirs_with_suite.append(direc)
     context = {
-        "suites": os.listdir(cylc_run_dir()),
+        "suites": dirs_with_suite 
     }
     template = loader.get_template('suites.html')
     return HttpResponse(template.render(context, request))
