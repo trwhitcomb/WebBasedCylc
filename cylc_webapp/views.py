@@ -30,6 +30,7 @@ def suites(request):
     return HttpResponse(template.render(context, request))
     
 def suite_view(request, suitename=''):
+    import json
     data = getResponse(suitename)
     dataset = []
     dataOrder = ["name", "label", "latest_message","host","batch_sys_name","submit_method_id","submitted_time_string","started_time_string","finished_time_string","mean_elapsed_time"]
@@ -39,6 +40,7 @@ def suite_view(request, suitename=''):
     else:
         for job in data:
             job = job.as_dict()
+            #print(json.dumps(data, indent=4, sort_keys = True))
         dataset = data
         
     context = {
@@ -48,3 +50,6 @@ def suite_view(request, suitename=''):
     }
     template = loader.get_template('suite_view.html')
     return HttpResponse(template.render(context, request) )
+
+def pageupdate(request):
+    print(request)

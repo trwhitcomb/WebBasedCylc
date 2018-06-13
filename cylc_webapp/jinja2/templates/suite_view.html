@@ -28,13 +28,83 @@
             }
         
             $(document).ready(function() {
-                refreshData();
+                addNewBars();
+                //updatePage(); 
+                setInterval(refreshData, 2000);
             });
+
+            function isInt(time){
+                return Number(time) === time && time % 1 === 0;
+            }
+
+            function isFloat(time){
+                return Number(time) === time && time % 1 !== 0;
+            }
+
+            function isValidDuration(time){
+                return isInt(time) || isFloat(time) 
+            }
+
+            function loadBarCreated(row){
+                return $(this).find("#t-finish .loader").length != 0
+            }   
+
+            function generateLoaderHtml(time, value, overtime, est_finish){
+                var htmlLoader = `<td >
+                                    <div class="outline">
+                                        <div class='progress-bar progress-bar-striped ${overtime} active' role='progressbar'
+                                        aria-valuenow=${value} aria-valuemin='0' aria-valuemax='100' 
+                                        style=width:${value}%>
+                                            ${est_finish}
+                                        </div>
+                                    </div>
+                                  </td>`;
+                return htmlLoader
+            }
+
+            function estimateFinishTime(start_time, secondsToCompletion){
+                var est_finish = start_time;
+                est_finish.setSeconds(start_time.getSeconds() + secondsToCompletion);
+                est_finish = est_finish.toISOString() + "?";
+                return est_finish;
+            }
+
+            //function updatePage(){
+            //    data = "hash=" + localStorage.hash;
+            //    var xhr = new XMLHttpRequest();
+            //    xhr.onreadystatechange = function(){
+            //        console.log(this.responseText);
+            //    }
+            //    xhr.open("POST", "pageupdate", true);
+            //    xhr.withCredentials = true;
+            //    xhr.send(data);
+            //}
+
+            function addNewBars(){
+                $("#JobDisplay tr").each(function(){
+                    var secondsToCompletion = Number($(this).find("#time-to-completion").html());
+                    var loadBar = $(this).find("#t-finish");
+                    var state = $(this).find("#state").html();
+                    if(isValidDuration(secondsToCompletion) && !loadBarCreated(this) && state == "running"){
+                        date_string = $(this).find("#start-time").html()
+                        var start_time = new Date(date_string)
+                        var current_time = Date.now()
+                        est_finish = estimateFinishTime(start_time, secondsToCompletion)
+                        var progress = (current_time - start_time)/1000
+                        var loaderVal = (progress/secondsToCompletion*100);
+                        if(loaderVal > 100){
+                            var overtime = "progress-bar-over";
+                            loaderVal = 100
+                        }
+                        loadBar.replaceWith(generateLoaderHtml(secondsToCompletion, loaderVal, overtime, est_finish))
+                    }
+                })
+            }
             
             function refreshData() {
                 var url = 'suite_view'; 
                 $('#refreshWrapper').load(url + ' #refreshableData', function(){
-                    setTimeout(refreshData, 5000);
+                    //setTimeout(refreshData, 10000);
                     console.log("refresh")
                     
                     // Toggleable
@@ -55,6 +125,7 @@
                             }
                         });
                     });
+                    addNewBars();
                 }); 
             }
 
@@ -109,6 +180,8 @@
     		        <div class="circle" style="background-color: pink"> </div>
     		    {% elif state == "failed" %}
     		        <div class="circle" style="background-color: red"> </div>
+                {% elif state == "running" %}
+                    <div class="circle" style="background-color: orange"></div>
     		    {% else %}
     		        <!--TODO: need to make this display the color of the status of the whole group-->
     		        <div class="circle" style="background-color: white; border: 1px solid gray"> </div>
@@ -152,15 +225,15 @@
                                     {{ item["name"] }}
                         		</td>
                         		<!--<td>{{ item["label"] }}</td>-->
-                        		<td>{{ item["state"] }}</td>
+                        		<td id="state">{{ item["state"] }}</td>
                         		<td>{{ item["host"] }}</td>
                         		<td>{{ item["latest_message"] }}</td>
                         		<td>{{ item["batch_sys_name"] }}</td>
                         		<td>{{ item["submit_method_id"] }}</td>
                         		<td>{{ item["submitted_time_string"] }}</td>
-                        		<td>{{ item["started_time_string"] }}</td>
-                        		<td>{{ item["finished_time_string"] }}</td>
-                        		<td>{{ item["mean_elapsed_time"] }}</td>
+                        		<td id="start-time">{{ item["started_time_string"] }}</td>
+                        		<td id="t-finish">{{ item["finished_time_string"] }}</td>
+                        		<td id="time-to-completion">{{ item["mean_elapsed_time"] }}</td>
                         	</tr>
                             {% endfor %}
                         </table>

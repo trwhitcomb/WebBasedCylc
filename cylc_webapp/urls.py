@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^$', views.register, name='register'),
     url(r'^register', views.register, name='register'),
     url(r'^suites/', views.suites, name='suites'),
-    url(r'^suite_view/(?P<suitename>[^/]+)/', views.suite_view, name='suite_view')
+    url(r'^suite_view/(?P<suitename>[^/]+)/', views.suite_view, name='suite_view'),
+    url(r'^pageupdate', views.pageupdate, name='pageupdate')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)#this is for dev, should be changed for production
