@@ -29,8 +29,8 @@
         
             $(document).ready(function() {
                 addNewBars();
-                //updatePage(); 
-                setInterval(refreshData, 2000);
+                updatePage(); 
+                //setInterval(refreshData, 2000);
             });
 
             function isInt(time){
@@ -69,16 +69,14 @@
                 return est_finish;
             }
 
-            //function updatePage(){
-            //    data = "hash=" + localStorage.hash;
-            //    var xhr = new XMLHttpRequest();
-            //    xhr.onreadystatechange = function(){
-            //        console.log(this.responseText);
-            //    }
-            //    xhr.open("POST", "pageupdate", true);
-            //    xhr.withCredentials = true;
-            //    xhr.send(data);
-            //}
+            function updatePage(){
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    console.log(this.responseText);
+                }
+                xhr.open("GET","?hashval=" + localStorage.current_hash, true);
+                xhr.send(localStorage.current_hash);
+            }
 
             function addNewBars(){
                 $("#JobDisplay tr").each(function(){
