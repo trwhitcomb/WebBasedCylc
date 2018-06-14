@@ -1,7 +1,35 @@
 body {
     font-family: helvetica;
 }
+.progress-bar{
+    background-color:green !important;
+    height:100%;
+    line-height: 20px;
+    font-size: 12px;
+    float:left;
+    transition: width .6s ease !important;
+    color:black !important; 
+    text-align:center;
+}
+.outline{
+    height: 20px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 30px rgba(27, 12, 12, 0.62); 
+}
+.progress-bar-striped, .progress-striped .progress-bar{
+    background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    background-size: 40px 40px;
+}
 
+.progress.active .progress-bar, .progress-bar.active{
+    animation: progress-bar-stripes 2s linear infinite;
+}
+
+.progress-bar-over{
+    background-color: #9a7d13 !important;
+ }
 table {
         width: 100%;
         border-collapse: collapse;
@@ -81,4 +109,7 @@ hr {
   -moz-transform: rotate(-90deg); /* Firefox */
   -webkit-transform: rotate(-90deg); /* Safari and Chrome */
   -o-transform: rotate(-90deg); /* Opera */
+}
+.suite_name {
+    list-style-type: none !important;
 }
